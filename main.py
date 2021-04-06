@@ -38,14 +38,30 @@ def detelaescolhaalunoparatelaloginaluno():
     Telaalunologincadastro.hide()
     Telaalunologin.show()
 
+def detelaalterarcadastroinstrutorparatelainstrutorlogincadastro():
+    Telaalterarcadastroinstrutor.hide()
+    Telainstrutorlogincadastro.show()
 
-    
-    
+def detelatelaprincipalinstrutorparatelainstrutorlogincadastro():
+    TelaprincipalInstrutor.hide()
+    Telainstrutorlogincadastro.show()
+
+def detelaalunologinparatelaprincipalaluno():
+    Telaalunologin.hide()
+    Telaprincipalaluno.show()
+
+def detelaprincipalalunoparatelamarcaraula():
+    Telaprincipalaluno.hide()
+    Telamarcaraula.show()
+
+def detelaprincipalalunoparatelaalterarcadastroaluno():
+    Telaprincipalaluno.hide()
+    Telaalterarcadastroaluno.show()
+
 def CadastroInstrutor():
 #Nome, Cpf, DiaNascimento, MesNascimento, AnoNascimento, Graduacao, Aluno, Horarios, Senha
 
     horarios = [[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1]]
-    Aluno = Telainstrutor.lineEdit_4.text()
     Nome = Telainstrutor.lineEdit.text()
     Cpf = Telainstrutor.lineEdit_2.text()
     Graduacao = Telainstrutor.lineEdit_3.text()
@@ -80,26 +96,15 @@ def CadastroInstrutor():
     if(len(Graduacao) > 500):
         QMessageBox.about(Telainstrutor, "Aviso", "O comprimento da graduacao deve conter no maximo 500 caracteres")
         return "O comprimento da graduacao deve conter no maximo 500 caracteres"
-
-    if(len(Aluno) != 11):
-        QMessageBox.about(Telainstrutor, "Aviso", "CPF de aluno invalido")
-        return "CPF de aluno invalido"
-        
-    for i in Aluno:
-        if(not i.isdigit()):
-            QMessageBox.about(Telainstrutor, "Aviso", "CPF de aluno invalido")
-            return "CPF de aluno invalido"
             
     con = psycopg2.connect(database='sistema', user='postgres', password='henry')
     cur = con.cursor()
-    cur.execute("insert into instrutor values('%s', '%s', %d, %d, %d, '%s', '%s', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s)"%(Nome, Cpf, DiaNascimento, MesNascimento, AnoNascimento, Graduacao, Aluno, horarios[0][0], horarios[0][1], horarios[1][0], horarios[1][1], horarios[2][0], horarios[2][1], horarios[3][0],horarios[3][1], horarios[4][0], horarios[4][1], horarios[5][0], horarios[5][1], horarios[6][0], horarios[6][1], Senha))
+    cur.execute("insert into instrutor values('%s', '%s', %d, %d, %d, '%s', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %s)"%(Nome, Cpf, DiaNascimento, MesNascimento, AnoNascimento, Graduacao, horarios[0][0], horarios[0][1], horarios[1][0], horarios[1][1], horarios[2][0], horarios[2][1], horarios[3][0],horarios[3][1], horarios[4][0], horarios[4][1], horarios[5][0], horarios[5][1], horarios[6][0], horarios[6][1], Senha))
     con.commit()
     con.close()
     Telainstrutor.hide()
     Telainstrutorlogincadastro.show()
     return "Instrutor Cadastrado com sucesso"
-
-
 
 
 def CadastroAluno():
@@ -258,7 +263,30 @@ def DisponibilidadeInstrutor():
 
 
 def MarcarAula():
-    return 1
+    
+    Data = Telamarcaraula.calendarWidget.selectedDate().toPyDate()
+    DiaSemana = Data.weekday()
+    HoraInicio = Telamarcaraula.lineEdit.text()
+    HoraFinal = Telamarcaraula.lineEdit_2.text()
+    Instrutor = Telamarcaraula.comboBox.text()
+    print (Data)
+    if DiaSemana == 0:
+        con = psycopg2.connect(database='sistema', user='postgres', password='henry')
+        cur = con.cursor()
+        Resultado = cur.execute("SELECT inseg, fimseg FROM instrutor WHERE cpfaluno = '%s' "%(a.GetCpf()))
+
+        print (Resultado)
+        con.commit()
+        con.close()
+
+    Telamarcaraula.hide()
+    Telaprincipalaluno.show()
+    return "Aulas marcadas com sucesso"
+
+    con = psycopg2.connect(database='sistema', user='postgres', password='henry')
+    cur = con.cur()
+    for i in range
+
 #CpfAluno, inseg, fimseg, inter, fimter, inqua, fimqua, inqui, fimqui, insex, fimsex, insab, fimsab, indom, fimdom
     
 def LoginInstrutor():
@@ -313,71 +341,76 @@ def LoginAluno():
         return 3
 
     Telaalunologin.hide()
-    Telaalunologin.show()
-
+    Telaalunologin.show() 
+    a.SetCpf(Cpf)
     return 1
+
 
 def AlterarCadastroInstrutor():
 
-    Nome = lineEdit.text()
-    Cpf = lineEdit_2.text()
-    CpfdoAluno = lineEdit_5.text()
-    Graduacao = lineEdit_4.text()
-    Senha = lineEdit_6.text()
-    data = Telaalterarcadastroinstrutor.calendarWidget.selectedDate()
-    DiaNascimento = data.day()
-    MesNascimento = data.month()
-    AnoNascimento = data.year()
+    Nome = Telaalterarcadastroinstrutor.lineEdit.text()
+    Cpf = Telaalterarcadastroinstrutor.lineEdit_2.text()
+    CpfdoAluno = Telaalterarcadastroinstrutor.lineEdit_5.text()
+    Graduacao = Telaalterarcadastroinstrutor.lineEdit_4.text()
+    Senha = Telaalterarcadastroinstrutor.lineEdit_6.text()
+    Data = Telaalterarcadastroinstrutor.calendarWidget.selectedDate()
+    DiaNascimento = Data.day()
+    MesNascimento = Data.month()
+    AnoNascimento = Data.year()
+
 
     con = psycopg2.connect(database='sistema', user='postgres', password='henry')
     cur = con.cursor()
-    cur.execute("select * from instrutor where cpf = '%s'"%(i.getCpf))
-    l = cur.fetchall()
-    con.close()
-
-    con = psycopg2.connect(database='sistema', user='postgres', password='henry')
-    cur = con.cursor()
-    cur.execute("delete from instrutor where cpf = '%s'"%(i.getCpf))
+    cur.execute("UPDATE instrutor SET nome = '%s', cpf  = '%s', cpfaluno = '%s', graduacao = '%s', senha = '%s', dianascimento = '%i', mesnascimento = '%i', anonascimento = '%i' WHERE cpf = '%s' "%(Nome, Cpf, CpfdoAluno, Graduacao, Senha, DiaNascimento, MesNascimento, AnoNascimento, i.GetCpf()))
     con.commit()
     con.close()
+    Telaalterarcadastroinstrutor.hide()
+    Telainstrutorlogincadastro.show()
+    return "Alterações feitas com sucesso"
 
-    if(len(Nome) < 5 or len(Nome) > 50):
-        QMessageBox.about(Telainstrutor, "Aviso", "Nome invalido(Para um nome ser considerado valido ele deve conter de 5 a 50 caracteres)")
-        return "Nome invalido(Para um nome ser considerado valido ele deve conter de 5 a 50 caracteres)"
+def RemoverContaInstrutor():
 
-    if(len(Cpf) != 11):
-        QMessageBox.about(Telainstrutor, "Aviso", "CPF invalido")
-        return "CPF invalido"
-
-    for i in Cpf:
-        if(not i.isdigit()):
-            QMessageBox.about(Telainstrutor, "Aviso", "CPF invalido")
-            return "CPF invalido"
-
-    if(AnoNascimento > 2002):
-        QMessageBox.about(Telainstrutor, "Aviso", "Voce deve ter mais de 18 anos para se cadastrar")
-        return "Voce deve ter mais de 18 anos para se cadastrar"
-
-    if(AnoNascimento < 1900):
-        QMessageBox.about(Telainstrutor, "Aviso", "Ano invalido")
-        return "Ano invalido"
-
-    if(len(Graduacao) > 500):
-        QMessageBox.about(Telainstrutor, "Aviso", "O comprimento da graduacao deve conter no maximo 500 caracteres")
-        return "O comprimento da graduacao deve conter no maximo 500 caracteres"
-
-    if(len(Aluno) != 11):
-        QMessageBox.about(Telainstrutor, "Aviso", "CPF de aluno invalido")
-        return "CPF de aluno invalido"
-        
-    for i in Aluno:
-        if(not i.isdigit()):
-            QMessageBox.about(Telainstrutor, "Aviso", "CPF de aluno invalido")
-            return "CPF de aluno invalido"
-
+    con = psycopg2.connect(database='sistema', user='postgres', password='henry')
+    cur = con.cursor()
+    cur.execute("DELETE FROM instrutor WHERE cpf = '%s' "%(i.GetCpf()))
+    con.commit()
+    con.close()
     TelaprincipalInstrutor.hide()
-    Telaalterarcadastroinstrutor.show()
-        
+    Telainstrutorlogincadastro.show()
+    return "Instrutor removido com sucesso"
+
+def AlterarCadastroAluno():
+
+    Nome = Telaalterarcadastroaluno.lineEdit.text()
+    Cpf = Telaalterarcadastroinstrutor.lineEdit_2.text()
+    Endereco = Telaalterarcadastroaluno.lineEdit_3.text()
+    NumeroContato = Telaalterarcadastroaluno.lineEdit_4.text()
+    Senha = Telaalterarcadastroaluno.lineEdit_5.text()
+    Data = Telaalterarcadastroaluno.calendarWidget.selectedDate()
+    DiaNascimento = Data.day()
+    MesNascimento = Data.month()
+    AnoNascimento = Data.year()
+
+    con = psycopg2.connect(database='sistema', user='postgres', password='henry')
+    cur = con.cursor()
+    cur.execute("UPDATE aluno SET nome = '%s', cpf  = '%s', endereco = '%s', numerocontato = '%s', senha = '%s', dianascimento = '%i', mesnascimento = '%i', anonascimento = '%i' WHERE cpf = '%s' "%(Nome, Cpf, Endereco, NumeroContato, Senha, DiaNascimento, MesNascimento, AnoNascimento, a.GetCpf()))
+    con.commit()
+    con.close()
+    Telaalterarcadastroaluno.hide()
+    Telaalunologincadastro.show()
+    return "Alterações feitas com sucesso"
+
+def RemoverContaAluno():
+
+    con = psycopg2.connect(database='sistema', user='postgres', password='henry')
+    cur = con.cursor()
+    cur.execute("DELETE FROM aluno WHERE cpf = '%s' "%(a.GetCpf()))
+    con.commit()
+    con.close()
+    Telaprincipalaluno.hide()
+    Telaalunologincadastro.show()
+    return "Instrutor removido com sucesso"
+
 def PrincipalDisponibilidade():
     TelaprincipalInstrutor.hide()
     Teladisponibilidadeinstrutor.show()
@@ -404,6 +437,7 @@ TelaprincipalInstrutor     = uic.loadUi("Telas/TelaprincipalInstrutor.ui")
 Teladisponibilidadeinstrutor = uic.loadUi("Telas/Teladisponibilidadeinstrutor.ui")
 Telamarcaraula = uic.loadUi("Telas/Telamarcaraula.ui")
 Telaalterarcadastroinstrutor = uic.loadUi("Telas/Telaalterarcadastroinstrutor.ui")
+Telaalterarcadastroaluno = uic.loadUi("Telas/Telaalterarcadastroaluno.ui")
 
 primeiratela.pushButton.clicked.connect(EscolherUsuario)
 
@@ -412,6 +446,10 @@ Telainstrutorlogincadastro.pushButton_2.clicked.connect(detelaescolhainstrutorpa
 
 Telaalunologincadastro.pushButton.clicked.connect(detelaescolhaalunoparatelacadastroaluno)
 Telaalunologincadastro.pushButton_2.clicked.connect(detelaescolhaalunoparatelaloginaluno)
+
+Telaalterarcadastroinstrutor.pushButton.clicked.connect(detelaalterarcadastroinstrutorparatelainstrutorlogincadastro)
+
+Telaprincipalaluno.pushButton_2.clicked.connect(detelaprincipalalunoparatelaalterarcadastroaluno)
 
 Telainstrutor.pushButton.clicked.connect(CadastroInstrutor)
 
@@ -428,10 +466,23 @@ Teladisponibilidadeinstrutor.pushButton.clicked.connect(DisponibilidadeInstrutor
 
 Telaalterarcadastroinstrutor.pushButton.clicked.connect(AlterarCadastroInstrutor)
 
+Telaalterarcadastroaluno.pushButton.clicked.connect(AlterarCadastroAluno)
+
+TelaprincipalInstrutor.pushButton_3.clicked.connect(RemoverContaInstrutor)
+
+Telaprincipalaluno.pushButton_3.clicked.connect(RemoverContaAluno)
+
+Telamarcaraula.pushButton.clicked.connect(MarcarAula)
+
+Telaalunologin.pushButton.clicked.connect(detelaalunologinparatelaprincipalaluno)
+
+Telaprincipalaluno.pushButton.clicked.connect(detelaprincipalalunoparatelamarcaraula)
 
 i = Instrutor("", "", "", "", "", "", [])
-#cria o usuario que está usando o programa
+#cria o instrutor que está usando o programa
 
+a = Aluno("", "", "", "", "", "", "", "")
+#cria o aluno que está usando o programa
 
 #chama a tela em que o programa deve começar
 primeiratela.show()
